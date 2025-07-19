@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRUST</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Georgia', serif; background: #F8F9FA; }
+
+    /* Header */
+    header {
+      background: 
+        linear-gradient(to right, rgba(51, 51, 51, 0.8), rgba(102, 102, 102, 0.8)), 
+        url('WhatsApp_Image_2025-07-19_at_19.59.41_6c3f59d2-removebg-preview.png') center/contain no-repeat;
+      color: white;
+      text-align: center;
+      padding: 4rem 1rem;
+    }
+    header h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+    header p { font-size: 1.2rem; }
+    .start-btn {
+      display: inline-block;
+      margin-top: 2rem;
+      padding: 0.75rem 1.5rem;
+      background: #ffc107;
+      color: black;
+      font-weight: bold;
+      border-radius: 50px;
+      text-decoration: none;
+    }
+
+    /* Top Navigation */
+    .top-nav {
+      display: flex;
+      justify-content: flex-end;
+      gap: 2rem;
+      padding: 1rem 2rem;
+      background: white;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 999;
+    }
+    .top-nav a { text-decoration: none; font-weight: bold; color: #333; }
+
+    /* Dashboard Layout */
+    .dashboard-container { display: none; flex-direction: row; }
+    .sidebar {
+      width: 260px;
+      background: #1A1B1E;
+      color: #E0E0E0;
+      padding: 2rem 1.5rem;
+      min-height: 100vh;
+    }
+    .sidebar .logo { display: block; width: 100px; margin: 0 auto 2rem; }
+    .sidebar nav ul { list-style: none; padding: 0; }
+    .sidebar nav ul li { margin-bottom: 1.2rem; }
+    .sidebar nav ul li a {
+      text-decoration: none;
+      color: #E0E0E0;
+      font-size: 1.05rem;
+      padding: 0.5rem;
+      display: block;
+      border-radius: 4px;
+    }
+    .sidebar nav ul li a:hover { background: #2B2D31; }
+
+    /* Main Content */
+    .main-content { flex: 1; background: #F2F2F2; padding: 2.5rem; }
+    .dashboard-header { font-size: 2rem; margin-bottom: 2rem; font-weight: 600; }
+
+    /* Card Style */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+      margin-bottom: 2rem;
+    }
+
+    /* Map */
+    #map { height: 400px; border-radius: 8px; margin-bottom: 1rem; }
+
+    /* Table */
+    #tailingsTable { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+    #tailingsTable th, #tailingsTable td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+    }
+    #tailingsTable th { background-color: #f2f2f2; font-weight: bold; }
+
+    /* Recommendation Box */
+    .recommendation-box {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 8px;
+      background: #fff6e5;
+      border-left: 5px solid #ffc107;
+      display: none;
+    }
+
+    footer { background: #f1f1f1; padding: 2rem; text-align: center; margin-top: 4rem; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="top-nav">
+    <a href="#home" onclick="showLanding()">Home</a>
+    <a href="#about">About Us</a>
+    <a href="#faq">FAQ</a>
+    <a href="#contact">Contact Us</a>
+    <a href="#dashboardContainer" onclick="startDashboard()">Dashboard</a>
+  </nav>
+
+  <!-- Header -->
+  <header id="home">
+    <h1>Tailing Risk Unified Simulation Tool "TRUST"</h1>
+    <p>Trust for Tail, Trust for Mine, Trust for the Future</p>
+    <a class="start-btn" href="#dashboardContainer" onclick="startDashboard()">Start</a>
+  </header>
+
+  <!-- About -->
+  <section id="about" style="padding: 4rem 2rem; background: #ffffff;">
+    <h2 style="text-align:center; margin-bottom: 1rem;">About Us</h2>
+    <p style="max-width: 800px; margin: 0 auto; text-align:center;">
+      TRUST (Tailing Risk Unified Simulation Tool) adalah situs untuk mengelola dan memanfaatkan tailings secara berkelanjutan dan efisien.
+    </p>
+  </section>
+
+  <!-- FAQ -->
+  <section id="faq" style="padding: 4rem 2rem; background: #f9f9f9;">
+    <h2 style="text-align:center; margin-bottom: 1rem;">FAQ</h2>
+    <div style="max-width: 800px; margin: 0 auto;">
+      <p><strong>Q:</strong> Apa itu tailings?<br><strong>A:</strong> Tailings adalah sisa material atau endapan hasil pengolahan tambang.</p>
+      <p><strong>Q:</strong> Bagaimana TRUST bekerja?<br><strong>A:</strong> Situs TRUST bekerja sebagai web rekomendasi dan prediksi tailings secara real time.</p>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section id="contact" style="padding: 4rem 2rem; background: #ffffff;">
+    <h2 style="text-align:center; margin-bottom: 1rem;">Contact Us</h2>
+    <p style="text-align:center;">
+      Email: support@trustmining.id<br>
+      Instagram: @trust.mining<br>
+      Phone: +62 812 3456 7890
+    </p>
+  </section>
+
+  <!-- Footer -->
+  <footer>&copy; 2025 TRUST Team. All rights reserved.</footer>
+
+  <!-- Dashboard -->
+  <div class="dashboard-container" id="dashboardContainer">
+    <aside class="sidebar">
+      <img src="WhatsApp_Image_2025-07-19_at_19.59.41_6c3f59d2-removebg-preview.png" alt="TRUST Logo" class="logo">
+      <nav>
+        <ul>
+          <li><a href="#" onclick="backToHome()">⬅ Back to Home</a></li>
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#map">Map</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <main class="main-content">
+      <section id="dashboard">
+        <div class="dashboard-header">Dashboard Tailings</div>
+        <div class="card">
+          <h3>Peta Lokasi Perusahaan & Rekomendasi</h3>
+          <div id="map"></div>
+          <div id="recommendation" class="recommendation-box"></div>
+        </div>
+        <div class="card">
+          <h3>Statistik Tailings (Real-Time)</h3>
+          <canvas id="tailingsChart" style="max-height: 300px;"></canvas>
+          <h4 style="margin-top: 1rem;">Tabel Ringkasan</h4>
+          <table id="tailingsTable">
+            <thead>
+              <tr><th>Perusahaan</th><th>Jenis Tailings</th><th>Tonase</th><th>Rekomendasi</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+          <div id="totalTailings" style="margin-top:1rem;font-weight:bold;"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Script -->
+  <script>
+    function startDashboard() {
+      document.getElementById('dashboardContainer').style.display = 'flex';
+      document.getElementById('dashboardContainer').scrollIntoView({ behavior: 'smooth' });
+
+      // Fix peta supaya ukurannya normal
+      setTimeout(() => {
+        map.invalidateSize();
+      }, 300);
+
+      initDashboardStats();
+    }
+
+    function backToHome() {
+      document.getElementById('dashboardContainer').style.display = 'none';
+      document.getElementById('home').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function showLanding() {
+      backToHome();
+    }
+
+    const now = new Date().getHours();
+    const isNight = now >= 18 || now < 6;
+    const mapStyle = isNight
+      ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+      : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+
+    const map = L.map('map').setView([-2.5489, 118.0149], 5);
+    L.tileLayer(mapStyle, { attribution: '&copy; contributors' }).addTo(map);
+
+    const companyTailings = {
+      "PT Goldman Indonesia": [
+        { type: "Sand A", tons: 40000, use: "Dapat digunakan sebagai bahan bata ringan." },
+        { type: "Mud B", tons: 25000, use: "Dapat digunakan sebagai material reklamasi lahan." }
+      ],
+      "CV Mineral Prosperous": [
+        { type: "Red Soil", tons: 55000, use: "Dapat digunakan media tanam dan paving block." }
+      ]
+    };
+
+    const markers = [
+      { name: "PT Goldman Indonesia", coords: [-7.25, 112.75] },
+      { name: "CV Mineral Prosperous", coords: [-0.9, 100.36] }
+    ];
+
+    const recBox = document.getElementById("recommendation");
+    markers.forEach(marker => {
+      const listItems = companyTailings[marker.name].map(t =>
+        `<li onclick="showRecommendation('${t.type}', '${t.use}')">${t.type} (${t.tons.toLocaleString()} ton)</li>`
+      ).join("");
+      const popupHTML = `<strong>${marker.name}</strong><ul class='popup-tailings'>${listItems}</ul>`;
+      L.marker(marker.coords).addTo(map).bindPopup(popupHTML);
+    });
+
+    function showRecommendation(type, use) {
+      recBox.innerHTML = `<strong>${type}</strong><br/>➜ Rekomendasi: ${use}`;
+      recBox.style.display = "block";
+      recBox.scrollIntoView({ behavior: "smooth" });
+    }
+
+    function initDashboardStats() {
+      const tableBody = document.querySelector("#tailingsTable tbody");
+      tableBody.innerHTML = "";
+
+      let total = 0;
+      const chartLabels = [];
+      const chartData = [];
+
+      for (const company in companyTailings) {
+        companyTailings[company].forEach(t => {
+          total += t.tons;
+          chartLabels.push(`${company} - ${t.type}`);
+          chartData.push(t.tons);
+          const row = `<tr><td>${company}</td><td>${t.type}</td><td>${t.tons.toLocaleString()} ton</td><td>${t.use}</td></tr>`;
+          tableBody.innerHTML += row;
+        });
+      }
+
+      document.getElementById("totalTailings").innerText = `Total Tailings: ${total.toLocaleString()} ton`;
+
+      new Chart(document.getElementById("tailingsChart"), {
+        type: 'bar',
+        data: { labels: chartLabels, datasets: [{ label: 'Tonase Tailings', data: chartData, backgroundColor: '#ffc107' }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+  </script>
+</body>
+</html>
